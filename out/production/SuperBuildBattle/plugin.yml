@@ -1,9 +1,9 @@
 name: SuperBuildBattle
-main: io.github.galaipa.bb.SuperBuildBattle
-version: 4.5
-author: Galaipa 
+main: sbb.SuperBuildBattle
+version: 8.0
+author: Galaipa
 description: BuildBattle minigame plugin
-softdepend: [WorldEdit,WorldGuard,Vault,PlayerPoints]
+softdepend: [WorldEdit,WorldGuard,Vault]
 commands:
   buildbattle:
     description: BuildBattle main command

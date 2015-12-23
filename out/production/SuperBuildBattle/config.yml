@@ -1,6 +1,18 @@
-Gaiak:
+Themes:
   - Creeper
+Metrics: true
 Language: en
+Debug: false
+CmdWhitelist:
+    - bb
+    - buildbattle
+OfflinePlayers:
+    - ''
+ItemBlackList:
+    - ''
+StartCommand:
+    Enabled : false
+    Command: ''
 Rewards:
   Vault:
     Enabled: false

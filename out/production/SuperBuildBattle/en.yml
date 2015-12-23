@@ -18,7 +18,7 @@
 18: Time
 19: Team
 20: The game has finished, thank you for playing
-21: Voting time! You have 30 second to vote each team! To vote click inventory items!
+21: Voting time! You have 30 second to vote each team
 22: Winner
 23: Rest
 24: points
@@ -35,3 +35,6 @@
 35: Super poop
 36: Epic
 37: Give your vote
+38: Leave
+39: You joined the game (Player {1}, Arena {2})
+40: Your selection
