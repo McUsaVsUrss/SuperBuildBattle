@@ -23,7 +23,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -309,7 +312,7 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
     }
 
     public synchronized void hasiera() {
-        if(inGame) return;
+        if (inGame) return;
         teams2 = new Team[teams.size()];
         teams2 = teams.toArray(teams2);
         loadSelection();
@@ -434,6 +437,7 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
     public void minimunReached() {
         new BukkitRunnable() {
             int a = 0;
+
             @Override
             public void run() {
                 if (player_max == taldeKopuruMinimoa) {
@@ -464,11 +468,12 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
     }
 
     public void start(final String gaia) {
-        if(inGame) return;
+        if (inGame) return;
         inGame = true;
         Broadcast(ChatColor.GREEN + getTr("13"));
         BukkitRunnable task = new BukkitRunnable() {
             int countdown = 10;
+
             public void run() {
                 for (Player p : playing_players) {
                     p.setLevel(countdown);
@@ -501,6 +506,7 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             int seconds = 0;
             int minutes = time;
+
             @Override
             public void run() {
                 if (minutes == 10 && seconds == 2 || minutes == 5 && seconds == 2 || minutes == 4 && seconds == 2 || minutes == 3 && seconds == 2 || minutes == 2 && seconds == 2 || minutes == 1 && seconds == 2) {
@@ -530,11 +536,11 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
     public void ScoreBoard2() {
         board.resetScores(timer);
         board.resetScores(reset);
-        reset = ChatColor.GREEN + getTr("19") + ": " + ChatColor.YELLOW + (current_voting_team+1);
+        reset = ChatColor.GREEN + getTr("19") + ": " + ChatColor.YELLOW + (current_voting_team + 1);
         board.resetScores(taldekideak);
         taldekideak = ChatColor.YELLOW + teams2[current_voting_team].getPlayerString();
         Objective objective = board.getObjective(DisplaySlot.SIDEBAR);
-        Score denbora = objective.getScore(ChatColor.GREEN + getTr("19") + ": " + ChatColor.YELLOW + (current_voting_team+1));
+        Score denbora = objective.getScore(ChatColor.GREEN + getTr("19") + ": " + ChatColor.YELLOW + (current_voting_team + 1));
         denbora.setScore(2);
         Score taldekideak = objective.getScore(ChatColor.YELLOW + teams2[current_voting_team].getPlayerString());
         taldekideak.setScore(1);
@@ -545,7 +551,7 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             //int current = 0;
             public void run() {
-                if (current_voting_team >= teams.size()-1) {
+                if (current_voting_team >= teams.size() - 1) {
                     Broadcast(ChatColor.GREEN + getTr("20"));
                     winner();
                     this.cancel();
@@ -571,7 +577,7 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
                 }
 
             }
-        }.runTaskTimer(this, 0, 20*timeVote);
+        }.runTaskTimer(this, 0, 20 * timeVote);
     }
 
     public void InventoryMenu() {
@@ -637,6 +643,7 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
 
         new BukkitRunnable() {
             int zenbat = 0;
+
             @Override
             public void run() {
                 Firework f = t.getWorld().spawn(t.getCuboid().getCenter(), Firework.class);

@@ -51,8 +51,8 @@ public class AdminGui implements Listener {
 
     public static void SetupInventory(Player p) {
         Inventory inv = p.getInventory();
-        inv.addItem(item(Material.STAINED_CLAY, 3, 1, ChatColor.GREEN + "Set building time"));
-        inv.addItem(item(Material.STAINED_CLAY, 3, 1, ChatColor.GREEN + "Set voting time"));
+        inv.addItem(item(Material.STAINED_CLAY, 3, 1, ChatColor.GREEN + "Set building time(MINUTES)"));
+        inv.addItem(item(Material.STAINED_CLAY, 3, 1, ChatColor.GREEN + "Set voting time (SECONDS)"));
         inv.addItem(item(Material.STAINED_CLAY, 3, 1, ChatColor.GREEN + "Set minimum players"));
         inv.addItem(item(Material.STAINED_CLAY, 3, 1, ChatColor.GREEN + "Set maximum players"));
         inv.addItem(item(Material.STAINED_CLAY, 3, 1, ChatColor.GREEN + "Set lobby spawnpoint"));
@@ -84,28 +84,28 @@ public class AdminGui implements Listener {
                         event.setCancelled(true);
                         time = i.getAmount() + 1;
                         inve.remove(i);
-                        i.setAmount(i.getAmount() + 1);
+                        i.setAmount(time);
                         inve.addItem(i);
                         p.updateInventory();
                     } else if (izena.equalsIgnoreCase(ChatColor.GREEN + "Set voting time")) {
                         event.setCancelled(true);
-                        timeVote = i.getAmount() + 1;
+                        timeVote = i.getAmount() + 5;
                         inve.remove(i);
-                        i.setAmount(i.getAmount() + 1);
+                        i.setAmount(timeVote);
                         inve.addItem(i);
                         p.updateInventory();
                     } else if (izena.equalsIgnoreCase(ChatColor.GREEN + "Set minimum players")) {
                         event.setCancelled(true);
                         players1 = i.getAmount() + 1;
                         inve.remove(i);
-                        i.setAmount(i.getAmount() + 1);
+                        i.setAmount(players1);
                         inve.addItem(i);
                         p.updateInventory();
                     } else if (izena.equalsIgnoreCase(ChatColor.GREEN + "Set maximum players")) {
                         event.setCancelled(true);
                         players2 = i.getAmount() + 1;
                         inve.remove(i);
-                        i.setAmount(i.getAmount() + 1);
+                        i.setAmount(players2);
                         inve.addItem(i);
                         p.updateInventory();
                     } else if (izena.equalsIgnoreCase(ChatColor.GREEN + "Clear")) {
@@ -146,7 +146,7 @@ public class AdminGui implements Listener {
                             plugin.returnInventory(p);
                         }
                     }
-                } else if (plugin.admin == true) {
+                } else if (plugin.admin) {
                     if (izena.equalsIgnoreCase(ChatColor.GREEN + "Setup arena")) {
                         p.getInventory().clear();
                         SetupInventory(p);
@@ -170,8 +170,6 @@ public class AdminGui implements Listener {
                         plugin.admin = false;
                         plugin.returnInventory(p);
                     }
-                } else {
-
                 }
 
             }
@@ -182,8 +180,8 @@ public class AdminGui implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (setup == true) {
-            if (region == true) {
+        if (setup) {
+            if (region) {
                 Player p = event.getPlayer();
                 if (p.getItemInHand().getType() == Material.STAINED_CLAY) {
                     String izena = p.getItemInHand().getItemMeta().getDisplayName();
