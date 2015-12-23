@@ -41,10 +41,8 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
     boolean wg;
     int player_max;
     int taldeKopuruMinimoa;
-    int arenak;
     int time;
     int timeVote;
-    boolean WorldGuard;
     boolean Vault;
     boolean Command;
     ArrayList<Player> playing_players = new ArrayList<>();
@@ -133,9 +131,7 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
         } else {
             Command = false;
         }
-
-        objective = board.registerNewObjective(ChatColor.DARK_GREEN.BOLD + "BuildBattle", "dummy");
-
+        objective = board.registerNewObjective(ChatColor.BOLD + "BuildBattle", "dummy");
     }
 
     @Override
@@ -312,7 +308,8 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
 
     }
 
-    public void hasiera() {
+    public synchronized void hasiera() {
+        if(inGame) return;
         teams2 = new Team[teams.size()];
         teams2 = teams.toArray(teams2);
         loadSelection();
@@ -380,14 +377,8 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
     public void allPlayers() {
         for (Team team : teams) {
             Player a = team.getPlayer();
-            Player a2 = team.getPlayer2();
             if (!playing_players.contains(a)) {
                 playing_players.add(a);
-            }
-            if (a2 != null) {
-                if (!playing_players.contains(a2)) {
-                    playing_players.add(a2);
-                }
             }
         }
     }
@@ -464,11 +455,11 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
             team.getPlayer().setGameMode(GameMode.CREATIVE);
             team.getPlayer().getWorld().playSound(team.getPlayer().getLocation(), Sound.NOTE_PLING, 10, 1);
             saveInventory(team.getPlayer());
-            Player a2 = team.getPlayer2();
+            /*Player a2 = team.getPlayer2();
             if (a2 != null) {
                 team.getPlayer2().teleport(team.getSpawnPoint());
                 team.getPlayer2().setGameMode(GameMode.CREATIVE);
-            }
+            }*/
         }
     }
 
@@ -539,7 +530,7 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
     public void ScoreBoard2() {
         board.resetScores(timer);
         board.resetScores(reset);
-        reset = ChatColor.GREEN + getTr("19") + ": " + ChatColor.YELLOW + current_voting_team+1;
+        reset = ChatColor.GREEN + getTr("19") + ": " + ChatColor.YELLOW + (current_voting_team+1);
         board.resetScores(taldekideak);
         taldekideak = ChatColor.YELLOW + teams2[current_voting_team].getPlayerString();
         Objective objective = board.getObjective(DisplaySlot.SIDEBAR);
@@ -550,15 +541,16 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
     }
 
     public void voting() {
-        current_voting_team = 0;
+        current_voting_team = -1;
         new BukkitRunnable() {
             //int current = 0;
             public void run() {
-                if (current_voting_team >= teams.size()) {
+                if (current_voting_team >= teams.size()-1) {
                     Broadcast(ChatColor.GREEN + getTr("20"));
                     winner();
                     this.cancel();
                 } else {
+                    current_voting_team++;
                     player_that_voted.clear();
                     InventoryMenu();
                     ScoreBoard2();
@@ -568,7 +560,6 @@ public class SuperBuildBattle extends JavaPlugin implements Listener {
                         sendTitleAll(20, 40, 20, teams2[current_voting_team].getPlayerString(), "");
                         p.getWorld().playSound(p.getLocation(), Sound.NOTE_PLING, 10, 1);
                     }
-                    current_voting_team++;
                     /*if (current == 0) {
                         Broadcast(ChatColor.GREEN + getTr("21"));
 

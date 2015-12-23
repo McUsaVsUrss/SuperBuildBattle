@@ -29,39 +29,38 @@ public class GameListener implements Listener {
                 if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Player p = event.getPlayer();
                     event.setCancelled(true);
-                    for (Player b : plugin.player_that_voted) {
-                        if (b == p) {
-                            p.sendMessage(ChatColor.RED + plugin.getTr("25"));
-                            return;
-                        }
+                    if(plugin.player_that_voted.contains(p)){
+                        p.sendMessage(ChatColor.RED + plugin.getTr("25"));
+                        return;
                     }
                     if (plugin.teams2[plugin.current_voting_team].checkPlayer(p)) {
                         p.sendMessage(ChatColor.RED + plugin.getTr("26"));
                     } else if (p.getItemInHand().getType() == Material.STAINED_CLAY) {
-                        String izena = p.getItemInHand().getItemMeta().getDisplayName();
-                        if (izena.equalsIgnoreCase(ChatColor.RED + plugin.getTr("35"))) {
+                        String item_name = p.getItemInHand().getItemMeta().getDisplayName();
+                        System.out.println(item_name);
+                        if (item_name.equalsIgnoreCase(ChatColor.RED + plugin.getTr("35"))) {
                             plugin.teams2[plugin.current_voting_team].addPoint(0);
-                            p.sendMessage(ChatColor.GREEN + "Your selection: " + izena);
+                            p.sendMessage(ChatColor.GREEN + "Your selection: " + item_name);
                             plugin.player_that_voted.add(p);
-                        } else if (izena.equalsIgnoreCase(ChatColor.RED + plugin.getTr("33"))) {
+                        } else if (item_name.equalsIgnoreCase(ChatColor.RED + plugin.getTr("33"))) {
                             plugin.teams2[plugin.current_voting_team].addPoint(1);
-                            p.sendMessage(ChatColor.GREEN + "Your selection: " + izena);
+                            p.sendMessage(ChatColor.GREEN + "Your selection: " + item_name);
                             plugin.player_that_voted.add(p);
-                        } else if (izena.equalsIgnoreCase(ChatColor.RED + plugin.getTr("32"))) {
+                        } else if (item_name.equalsIgnoreCase(ChatColor.RED + plugin.getTr("32"))) {
                             plugin.teams2[plugin.current_voting_team].addPoint(2);
-                            p.sendMessage(ChatColor.GREEN + "Your selection: " + izena);
+                            p.sendMessage(ChatColor.GREEN + "Your selection: " + item_name);
                             plugin.player_that_voted.add(p);
-                        } else if (izena.equalsIgnoreCase(ChatColor.GREEN + plugin.getTr("31"))) {
+                        } else if (item_name.equalsIgnoreCase(ChatColor.GREEN + plugin.getTr("31"))) {
                             plugin.teams2[plugin.current_voting_team].addPoint(3);
-                            p.sendMessage(ChatColor.GREEN + "Your selection:: " + izena);
+                            p.sendMessage(ChatColor.GREEN + "Your selection:: " + item_name);
                             plugin.player_that_voted.add(p);
-                        } else if (izena.equalsIgnoreCase(ChatColor.GREEN + plugin.getTr("30"))) {
+                        } else if (item_name.equalsIgnoreCase(ChatColor.GREEN + plugin.getTr("30"))) {
                             plugin.teams2[plugin.current_voting_team].addPoint(4);
-                            p.sendMessage(ChatColor.GREEN + "Your selection: " + izena);
+                            p.sendMessage(ChatColor.GREEN + "Your selection: " + item_name);
                             plugin.player_that_voted.add(p);
-                        } else if (izena.equalsIgnoreCase(ChatColor.GREEN + plugin.getTr("36"))) {
+                        } else if (item_name.equalsIgnoreCase(ChatColor.GREEN + plugin.getTr("36"))) {
                             plugin.teams2[plugin.current_voting_team].addPoint(5);
-                            p.sendMessage(ChatColor.GREEN + "Your selection: " + izena);
+                            p.sendMessage(ChatColor.GREEN + "Your selection: " + item_name);
                             plugin.player_that_voted.add(p);
                         }
                     }
@@ -73,7 +72,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void PlayerCommand(PlayerCommandPreprocessEvent event) {
-        if (plugin.inGame == true) {
+        if (plugin.inGame) {
             Player p = event.getPlayer();
             if (plugin.playing_players.contains(p)) {
                 if (event.getMessage().toLowerCase().startsWith("/buildbattle")) {

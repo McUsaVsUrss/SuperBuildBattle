@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 public class Team {
     public Player player;
-    public Player player2;
     private int id;
     private int point;
     private Cuboid cuboid;
@@ -75,36 +74,16 @@ public class Team {
         player = null;
     }
 
-    public void addPlayers(Player p, Player p2) {
-        player = p;
-        player2 = p2;
-    }
-
     public Player getPlayer() {
         return player;
     }
 
-    public Player getPlayer2() {
-        return player2;
-    }
-
     public String getPlayerString() {
-        String p = player.getName();
-        String jokalariak = p;
-        if (player2 != null) {
-            jokalariak = p + " eta " + player2.getName();
-        }
-        return jokalariak;
+        return player.getName();
     }
 
     public Boolean checkPlayer(Player p) {
-        Player pa = player;
-        Player pa2 = player2;
-        if (p == pa || p == pa2) {
-            return true;
-        } else {
-            return false;
-        }
+        return p.equals(player);
     }
 }
     
