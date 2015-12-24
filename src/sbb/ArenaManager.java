@@ -97,14 +97,16 @@ public class ArenaManager {
     public void removePlayer(Player p) {
         if (getArena(p) != null) {
             Arena arena = getArena(p);
-            SbbPlayer j2 = arena.getJolakaria(p);
+            SbbPlayer j2 = arena.getArenaPlayer(p);
             if (arena.inGame) {
                 j2.resetArenas();
             }
-            p.setGameMode(GameMode.SURVIVAL);
             p.teleport(j2.getPreSpawn());
-            p.sendMessage(ChatColor.GREEN + "[Build Battle] " + ChatColor.RED + getTr("3"));
-            j2.returnInv();
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                p.setGameMode(GameMode.SURVIVAL);
+                p.sendMessage(ChatColor.GREEN + "[Build Battle] " + ChatColor.RED + getTr("3"));
+                j2.returnInv();
+            }, 5L);
             arena.Broadcast(ChatColor.GREEN + "[Build Battle] " + ChatColor.RED + p.getName() + " " + getTr("4"));
             arena.getPlayers().remove(j2);
         } else {

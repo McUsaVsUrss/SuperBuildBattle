@@ -36,22 +36,22 @@ public class GameListener implements Listener {
                     } else if (p.getItemInHand().getType() == Material.STAINED_CLAY) {
                         String izena = p.getItemInHand().getItemMeta().getDisplayName();
                         if (izena.equalsIgnoreCase(ChatColor.RED + getTr("35"))) {
-                            gehituBotoa(p, 0, a);
+                            vote(p, 0, a);
                             p.sendMessage(ChatColor.GREEN + getTr("39") + ": " + izena);
                         } else if (izena.equalsIgnoreCase(ChatColor.RED + getTr("33"))) {
-                            gehituBotoa(p, 1, a);
+                            vote(p, 1, a);
                             p.sendMessage(ChatColor.GREEN + getTr("39") + ": " + izena);
                         } else if (izena.equalsIgnoreCase(ChatColor.RED + getTr("32"))) {
-                            gehituBotoa(p, 2, a);
+                            vote(p, 2, a);
                             p.sendMessage(ChatColor.GREEN + getTr("39") + ": " + izena);
                         } else if (izena.equalsIgnoreCase(ChatColor.GREEN + getTr("31"))) {
-                            gehituBotoa(p, 3, a);
+                            vote(p, 3, a);
                             p.sendMessage(ChatColor.GREEN + getTr("39") + ": " + izena);
                         } else if (izena.equalsIgnoreCase(ChatColor.GREEN + getTr("30"))) {
-                            gehituBotoa(p, 4, a);
+                            vote(p, 4, a);
                             p.sendMessage(ChatColor.GREEN + getTr("39") + ": " + izena);
                         } else if (izena.equalsIgnoreCase(ChatColor.GREEN + getTr("36"))) {
-                            gehituBotoa(p, 5, a);
+                            vote(p, 5, a);
                             p.sendMessage(ChatColor.GREEN + getTr("30") + ": " + izena);
                         }
                     }
@@ -60,7 +60,8 @@ public class GameListener implements Listener {
         }
     }
 
-    public void gehituBotoa(Player p, int i, Arena a) {
+    public void vote(Player p, int i, Arena a) {
+        if(a.currentPlayer != null) a.currentPlayer.addPoint(i);
         if (a.player_that_voted.containsKey(p)) {
             a.player_that_voted.remove(p);
             a.player_that_voted.put(p, i);
@@ -93,7 +94,7 @@ public class GameListener implements Listener {
         if (getManager().getArena(event.getPlayer()) != null) {
             Arena a = getManager().getArena(event.getPlayer());
             if (a.inGame) {
-                if (!a.getJolakaria(event.getPlayer()).getCuboid().contains(event.getBlock()) || a.voting) {
+                if (!a.getArenaPlayer(event.getPlayer()).getCuboid().contains(event.getBlock()) || a.voting) {
                     event.setCancelled(true);
                 }
             }
@@ -105,7 +106,7 @@ public class GameListener implements Listener {
         if (getManager().getArena(event.getPlayer()) != null) {
             Arena a = getManager().getArena(event.getPlayer());
             if (a.inGame) {
-                if (!a.getJolakaria(event.getPlayer()).getCuboid().contains(event.getBlock())) {
+                if (!a.getArenaPlayer(event.getPlayer()).getCuboid().contains(event.getBlock())) {
                     event.setCancelled(true);
                 }
             }
@@ -119,7 +120,7 @@ public class GameListener implements Listener {
             if (a.inGame) {
                 Location l = event.getBlockClicked().getLocation();
                 l.setY(l.getY() + 1);
-                if (!a.getJolakaria(event.getPlayer()).getCuboid().contains(l)) {
+                if (!a.getArenaPlayer(event.getPlayer()).getCuboid().contains(l)) {
                     event.setCancelled(true);
                 }
             }
@@ -152,9 +153,9 @@ public class GameListener implements Listener {
             plugin.getConfig().set("OfflinePlayers", list);
             plugin.saveConfig();
             if (a.inGame) {
-                a.getJolakaria(e.getPlayer()).resetArenas();
+                a.getArenaPlayer(e.getPlayer()).resetArenas();
                 if (ArenaManager.WorldGuarda) {
-                    WorldGuardOptional.WGregionRM(a.getJolakaria(e.getPlayer()).getID(), a.getID());
+                    WorldGuardOptional.WGregionRM(a.getArenaPlayer(e.getPlayer()).getID(), a.getID());
                 }
             }
             //Taldea ezabatu
@@ -186,14 +187,12 @@ public class GameListener implements Listener {
         if (getManager().getArena(e.getPlayer()) != null) {
             a = getManager().getArena(e.getPlayer());
             if (a.inGame && !a.voting) {
-                if (a.getJolakaria(e.getPlayer()).getCuboid().contains(e.getPlayer().getLocation())) {
-                } else {
-                    e.getPlayer().teleport(a.getJolakaria(e.getPlayer()).getSpawnPoint());
+                if (!a.getArenaPlayer(e.getPlayer()).getCuboid().contains(e.getPlayer().getLocation())) {
+                    e.getPlayer().teleport(a.getArenaPlayer(e.getPlayer()).getSpawnPoint());
                 }
-            } else if (a.inGame && a.voting) {
-                if (a.players.contains(e.getPlayer())) {
-                    if (a.currentPlayer.getCuboid().contains(e.getPlayer().getLocation())) {
-                    } else {
+            } else if (a.inGame) {
+                if (a.contains(e.getPlayer())) {
+                    if (!a.currentPlayer.getCuboid().contains(e.getPlayer().getLocation())) {
                         e.getPlayer().teleport(a.currentPlayer.getSpawnPoint());
                     }
                 }

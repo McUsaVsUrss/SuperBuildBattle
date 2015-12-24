@@ -11,6 +11,7 @@ import spigboard.SpigboardEntry;
 import java.util.*;
 
 import static sbb.SuperBuildBattle.getTr;
+
 public class Arena {
     public int id;
     private boolean started = false;
@@ -43,13 +44,22 @@ public class Arena {
         return this.players;
     }
 
-    public SbbPlayer getJolakaria(Player p) {
+    public SbbPlayer getArenaPlayer(Player p) {
         for (SbbPlayer j : players) {
-            if (j.getPlayer() == p) {
+            if (j.getPlayer().equals(p)) {
                 return j;
             }
         }
         return null;
+    }
+
+    public boolean contains(Player p){
+        for (SbbPlayer j : players) {
+            if (j.getPlayer().equals(p)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void assignArenas() {
@@ -101,13 +111,15 @@ public class Arena {
                     for (SbbPlayer j : getPlayers()) {
                         Player p = j.getPlayer();
                         p.teleport(j.getSpawnPoint());
-                        p.setGameMode(GameMode.CREATIVE);
-                        p.getWorld().playSound(p.getLocation(), Sound.NOTE_PLING, 10, 1);
-                        InGameGui.giveUserGui(p);
-                        InGameGui.userGui();
-                        if (plugin.getConfig().getBoolean("StartCommand.Enabled")) {
-                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), (plugin.getConfig().getString("StartCommand.Command")).replace("$player$", p.getName()));
-                        }
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                            p.setGameMode(GameMode.CREATIVE);
+                            p.getWorld().playSound(p.getLocation(), Sound.NOTE_PLING, 10, 1);
+                            InGameGui.giveUserGui(p);
+                            InGameGui.userGui();
+                            if (plugin.getConfig().getBoolean("StartCommand.Enabled")) {
+                                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), (plugin.getConfig().getString("StartCommand.Command")).replace("$player$", p.getName()));
+                            }
+                        }, 5L);
                     }
                     inGame = true;
                     cancel();
@@ -188,13 +200,14 @@ public class Arena {
             int current = 0;
             @Override
             public void run() {
-                for (SbbPlayer j2 : players) {
-                    if (player_that_voted.containsKey(j2.getPlayer())) {
-                        if (getPlayer(current) != null) {
-                            getPlayer(current).addPoint(player_that_voted.get(j2.getPlayer()));
+                if(currentPlayer != null){
+                    for (SbbPlayer j2 : players) {
+                        if (player_that_voted.containsKey(j2.getPlayer())) {
+                            currentPlayer.addPoint(player_that_voted.get(j2.getPlayer()));
                         }
                     }
                 }
+
                 player_that_voted.clear();
                 if (current >= players.size()) {
                     winner();
@@ -219,7 +232,7 @@ public class Arena {
                     if (current == 0) {
                         Broadcast(ChatColor.GREEN + "-----------------------------------------------");
                         Broadcast(ChatColor.BOLD.toString());
-                        Broadcast(ChatColor.WHITE + "                         lVoting");
+                        Broadcast(ChatColor.WHITE + "                         Voting");
                         Broadcast(ChatColor.GREEN + "        " + getTr("21"));
                         Broadcast(ChatColor.BOLD.toString());
                         Broadcast(ChatColor.GREEN + "-----------------------------------------------");
@@ -253,14 +266,14 @@ public class Arena {
         }
         Broadcast(ChatColor.GREEN + "------------------------------------------------");
         Broadcast(ChatColor.BOLD.toString());
-        Broadcast(ChatColor.WHITE + "                         lSuper Build Battle");
+        Broadcast(ChatColor.WHITE + "                         Super Build Battle");
         Broadcast(ChatColor.GREEN + "       " + getTr("20"));
-        Broadcast(ChatColor.YELLOW + "1: " + ChatColor.GREEN + winner1.getPlayerString() + "(" + winner1.getPoint() + " " + getTr("24") + ")");
+        Broadcast(ChatColor.YELLOW + "       " + "1: " + ChatColor.GREEN + winner1.getPlayerString() + "(" + winner1.getPoint() + " " + getTr("24") + ")");
         if (winner2 != null) {
-            Broadcast(ChatColor.YELLOW + "2: " + ChatColor.GREEN + winner2.getPlayerString() + "(" + winner2.getPoint() + " " + getTr("24") + ")");
+            Broadcast(ChatColor.YELLOW + "       " + "2: " + ChatColor.GREEN + winner2.getPlayerString() + "(" + winner2.getPoint() + " " + getTr("24") + ")");
         }
         if (winner3 != null) {
-            Broadcast(ChatColor.YELLOW + "3: " + ChatColor.GREEN + winner3.getPlayerString() + "(" + winner3.getPoint() + " " + getTr("24") + ")");
+            Broadcast(ChatColor.YELLOW + "       " + "3: " + ChatColor.GREEN + winner3.getPlayerString() + "(" + winner3.getPoint() + " " + getTr("24") + ")");
         }
         Broadcast(ChatColor.BOLD.toString());
         Broadcast(ChatColor.GREEN + "------------------------------------------------");
